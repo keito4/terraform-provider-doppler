@@ -330,6 +330,13 @@ func resourceSyncGitHubActions() *schema.Resource {
 				Optional:    true,
 				ForceNew:    true,
 			},
+			"sync_unmasked_as_variables": {
+				Description: "When enabled, causes secrets with the `unmasked` visibility type to get synced as GitHub Action Variables. Defaults to `false`.",
+				Type:        schema.TypeBool,
+				Default:     false,
+				Optional:    true,
+				ForceNew:    true,
+			},
 		},
 		DataBuilder: func(d *schema.ResourceData) IntegrationData {
 			payload := map[string]interface{}{
@@ -347,6 +354,10 @@ func resourceSyncGitHubActions() *schema.Resource {
 			environment_name := d.Get("environment_name")
 			if environment_name != "" {
 				payload["environment_name"] = environment_name
+			}
+			sync_unmasked_as_variables := d.Get("sync_unmasked_as_variables")
+			if sync_unmasked_as_variables != "" {
+				payload["sync_unmasked_as_variables"] = sync_unmasked_as_variables
 			}
 			return payload
 		},

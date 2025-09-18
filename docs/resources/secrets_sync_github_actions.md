@@ -33,6 +33,17 @@ resource "doppler_secrets_sync_github_actions" "backend_prod" {
   environment_name = "production"
 }
 
+# Repo + Variable Syncing
+resource "doppler_secrets_sync_github_actions" "backend_prod" {
+  integration = "bae40485-eca7-478b-abd8-34100c82c679"
+  project     = "backend"
+  config      = "prd"
+
+  sync_target                = "repo"
+  repo_name                  = "backend"
+  sync_unmasked_as_variables = true
+}
+
 # Org
 resource "doppler_secrets_sync_github_actions" "backend_prod" {
   integration = "bae40485-eca7-478b-abd8-34100c82c679"
@@ -60,6 +71,7 @@ resource "doppler_secrets_sync_github_actions" "backend_prod" {
 - `environment_name` (String) The GitHub repo environment name to sync to (only used when `sync_target` is set to "repo")
 - `org_scope` (String) Either "all" or "private", based on the which repos you want to have access (only used when `sync_target` is set to "org")
 - `repo_name` (String) The GitHub repo name to sync to (only used when `sync_target` is set to "repo")
+- `sync_unmasked_as_variables` (Boolean) When enabled, causes secrets with the `unmasked` visibility type to get synced as GitHub Action Variables. Defaults to `false`.
 
 ### Read-Only
 
