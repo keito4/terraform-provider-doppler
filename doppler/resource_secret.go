@@ -47,7 +47,7 @@ func resourceSecret() *schema.Resource {
 				Sensitive:   true,
 			},
 			"visibility": {
-				Description:  "The visibility of the secret",
+				Description:  "The visibility of the secret. One of `masked`, `unmasked`, or `restricted`. Defaults to `masked`.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      "masked",
