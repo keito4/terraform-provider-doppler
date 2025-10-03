@@ -1261,6 +1261,60 @@ func (client APIClient) DeleteServiceAccountToken(ctx context.Context, serviceAc
 	return nil
 }
 
+// Service Account Identities
+
+func (client APIClient) GetServiceAccountIdentity(ctx context.Context, serviceAccountSlug string, slug string) (ServiceAccountIdentity, error) {
+	response, err := client.PerformRequestWithRetry(ctx, "GET", fmt.Sprintf("/v3/workplace/service_accounts/service_account/%s/identities/identity/%s", url.QueryEscape(serviceAccountSlug), url.QueryEscape(slug)), []QueryParam{}, nil)
+	if err != nil {
+		return ServiceAccountIdentity{}, err
+	}
+	var result ServiceAccountIdentityResponse
+	if err = result.unmarshal(response.Body); err != nil {
+		return ServiceAccountIdentity{}, &APIError{Err: err, Message: "Unable to parse service account identity"}
+	}
+	return result.Identity, nil
+}
+
+func (client APIClient) CreateServiceAccountIdentity(ctx context.Context, serviceAccountSlug string, identity *ServiceAccountIdentity) (*ServiceAccountIdentity, error) {
+	body, err := identity.marshal()
+	if err != nil {
+		return nil, &APIError{Err: err, Message: "Unable to serialize account service identity"}
+	}
+	response, err := client.PerformRequestWithRetry(ctx, "POST", fmt.Sprintf("/v3/workplace/service_accounts/service_account/%s/identities", url.QueryEscape(serviceAccountSlug)), []QueryParam{}, body)
+	if err != nil {
+		return nil, err
+	}
+	var result ServiceAccountIdentityResponse
+	if err = result.unmarshal(response.Body); err != nil {
+		return nil, &APIError{Err: err, Message: "Unable to parse service account identity"}
+	}
+	return &result.Identity, nil
+}
+
+func (client APIClient) UpdateServiceAccountIdentity(ctx context.Context, serviceAccountSlug string, identity *ServiceAccountIdentity) (*ServiceAccountIdentity, error) {
+	body, err := identity.marshal()
+	if err != nil {
+		return nil, &APIError{Err: err, Message: "Unable to serialize account service identity"}
+	}
+	response, err := client.PerformRequestWithRetry(ctx, "PUT", fmt.Sprintf("/v3/workplace/service_accounts/service_account/%s/identities/identity/%s", url.QueryEscape(serviceAccountSlug), url.QueryEscape(identity.Slug)), []QueryParam{}, body)
+	if err != nil {
+		return nil, err
+	}
+	var result ServiceAccountIdentityResponse
+	if err = result.unmarshal(response.Body); err != nil {
+		return nil, &APIError{Err: err, Message: "Unable to parse service account identity"}
+	}
+	return &result.Identity, nil
+}
+
+func (client APIClient) DeleteServiceAccountIdentity(ctx context.Context, serviceAccountSlug string, slug string) error {
+	_, err := client.PerformRequestWithRetry(ctx, "DELETE", fmt.Sprintf("/v3/workplace/service_accounts/service_account/%s/identities/identity/%s", url.QueryEscape(serviceAccountSlug), url.QueryEscape(slug)), []QueryParam{}, nil)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // Groups
 
 func (client APIClient) GetGroup(ctx context.Context, slug string) (*Group, error) {

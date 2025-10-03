@@ -285,6 +285,60 @@ func (t ServiceAccountToken) getResourceId() string {
 	return t.Slug
 }
 
+type ServiceAccountIdentityConfigOidc struct {
+	DiscoveryUrl string              `json:"discovery_url"`
+	ClaimsType   string              `json:"claims_type"`
+	Claims       map[string][]string `json:"claims"`
+}
+
+type ServiceAccountIdentity struct {
+	Slug       string          `json:"slug"`
+	Name       string          `json:"name"`
+	TtlSeconds int             `json:"ttl_seconds"`
+	Method     string          `json:"method"`
+	Config     json.RawMessage `json:"config"`
+	ConfigOidc ServiceAccountIdentityConfigOidc
+}
+
+type ServiceAccountIdentityResponse struct {
+	Identity ServiceAccountIdentity `json:"identity"`
+}
+
+func (response *ServiceAccountIdentityResponse) unmarshal(data []byte) error {
+	if err := json.Unmarshal(data, response); err != nil {
+		return err
+	}
+	switch response.Identity.Method {
+	case "oidc":
+		response.Identity.ConfigOidc = ServiceAccountIdentityConfigOidc{}
+		if err := json.Unmarshal(response.Identity.Config, &response.Identity.ConfigOidc); err != nil {
+			return err
+		}
+	default:
+		return errors.New("Unknown auth method type")
+	}
+	return nil
+}
+
+func (id *ServiceAccountIdentity) marshal() ([]byte, error) {
+	payload := map[string]interface{}{
+		"name":        id.Name,
+		"ttl_seconds": id.TtlSeconds,
+		"method":      id.Method,
+	}
+	switch id.Method {
+	case "oidc":
+		payload["config"] = map[string]interface{}{
+			"discovery_url": id.ConfigOidc.DiscoveryUrl,
+			"claims_type":   id.ConfigOidc.ClaimsType,
+			"claims":        id.ConfigOidc.Claims,
+		}
+	default:
+		return nil, errors.New("Unknown auth method type")
+	}
+	return json.Marshal(payload)
+}
+
 type WorkplaceRole struct {
 	Name         string   `json:"name"`
 	Permissions  []string `json:"permissions"`
