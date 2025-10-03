@@ -42,8 +42,9 @@ func Provider() *schema.Provider {
 
 			"doppler_workplace_role": resourceWorkplaceRole(),
 
-			"doppler_service_account":       resourceServiceAccount(),
-			"doppler_service_account_token": resourceServiceAccountToken(),
+			"doppler_service_account":          resourceServiceAccount(),
+			"doppler_service_account_token":    resourceServiceAccountToken(),
+			"doppler_service_account_identity": resourceServiceAccountIdentity(),
 
 			"doppler_group":         resourceGroup(),
 			"doppler_group_member":  resourceGroupMemberWorkplaceUser(),
@@ -113,9 +114,9 @@ func Provider() *schema.Provider {
 			"doppler_secrets_sync_gcp_secret_manager": resourceSyncGCPSecretManager(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"doppler_secrets":    dataSourceSecrets(),
-			"doppler_user":       dataSourceUser(),
-			"doppler_group":      dataSourceGroup(),
+			"doppler_secrets":      dataSourceSecrets(),
+			"doppler_user":         dataSourceUser(),
+			"doppler_group":        dataSourceGroup(),
 			"doppler_environments": dataSourceEnvironments(),
 		},
 		ConfigureContextFunc: providerConfigure,
