@@ -2,7 +2,7 @@
 page_title: "doppler_service_account_token Resource - terraform-provider-doppler"
 subcategory: "Service Accounts"
 description: |-
-	Manage a Doppler service_account_token.
+	Manage a Doppler service account token.
 ---
 
 # doppler_service_account_token (Resource)
@@ -14,6 +14,7 @@ Manage a Doppler service account token.
 ```terraform
 resource "doppler_service_account" "ci" {
   name = "ci"
+  workplace_role = "collaborator"
 }
 
 resource "doppler_service_account_token" "builder_ci_token" {
