@@ -44,7 +44,7 @@ output "resource_value" {
 ### Optional
 
 - `value_type` (String) The value type of the secret
-- `visibility` (String) The visibility of the secret
+- `visibility` (String) The visibility of the secret. One of `masked`, `unmasked`, or `restricted`. Defaults to `masked`.
 
 ### Read-Only
 
