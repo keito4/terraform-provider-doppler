@@ -3,6 +3,7 @@ package doppler
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -14,6 +15,9 @@ func resourceServiceAccountIdentity() *schema.Resource {
 		ReadContext:   resourceServiceAccountIdentityRead,
 		UpdateContext: resourceServiceAccountIdentityUpdate,
 		DeleteContext: resourceServiceAccountIdentityDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: resourceServiceAccountIdentityImport,
+		},
 		Schema: map[string]*schema.Schema{
 			"service_account_slug": {
 				Description: "Slug of the service account",
@@ -88,6 +92,19 @@ var resourceServiceAccountIdentityConfigOidcClaims = schema.Resource{
 			},
 		},
 	},
+}
+
+func resourceServiceAccountIdentityImport(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+	split := strings.Split(d.Id(), `.`)
+	if len(split) != 2 {
+		return []*schema.ResourceData{d}, errors.New("Service account identity id not in the format <service-account-slug>.<service-account-identity-slug>")
+	}
+	if err := d.Set("service_account_slug", split[0]); err != nil {
+		return []*schema.ResourceData{d}, err
+	}
+	d.SetId(split[1])
+
+	return []*schema.ResourceData{d}, nil
 }
 
 func resourceServiceAccountIdentityCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

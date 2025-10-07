@@ -73,3 +73,11 @@ Required:
 
 - `key` (String) The key of the claim to validate
 - `values` (Set of String) The set of valid values for this claim
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+terraform import doppler_service_account_identity.default <service-account-slug>.<service-account-identity-slug>
+```
