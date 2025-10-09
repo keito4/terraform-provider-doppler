@@ -1,5 +1,6 @@
 resource "doppler_service_account" "ci" {
   name = "ci"
+  workplace_role = "collaborator"
 }
 
 resource "doppler_service_account_token" "builder_ci_token" {

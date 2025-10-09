@@ -2,7 +2,7 @@
 page_title: "doppler_service_token Resource - terraform-provider-doppler"
 subcategory: "Service Tokens"
 description: |-
-	Manage a Doppler service_token.
+	Manage a Doppler service token.
 ---
 
 # doppler_service_token (Resource)
