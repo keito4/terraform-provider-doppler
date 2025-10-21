@@ -28,7 +28,7 @@ resource "doppler_project_member_group" "backend_engineering" {
 
 - `group_slug` (String) The slug of the Doppler group
 - `project` (String) The name of the Doppler project where the access is applied
-- `role` (String) The project role identifier for the access
+- `role` (String) The project role identifier for the access. Must use either one of the built-in project role slugs (`admin`, `owner`, `collaborator`, or `no_access`), or the slug for a custom project role.
 
 ### Optional
 
