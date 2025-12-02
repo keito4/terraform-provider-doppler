@@ -97,7 +97,7 @@ func resourceServiceAccountTokenRead(ctx context.Context, d *schema.ResourceData
 
 	token, err := client.GetServiceAccountToken(ctx, serviceAccount, slug)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleNotFoundError(err, d)
 	}
 
 	if err = d.Set("name", token.ServiceAccountToken.Name); err != nil {
