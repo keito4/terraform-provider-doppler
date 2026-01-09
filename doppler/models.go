@@ -160,10 +160,11 @@ type ExternalIdResponse struct {
 }
 
 type Environment struct {
-	Slug      string `json:"slug"`
-	Name      string `json:"name"`
-	Project   string `json:"project"`
-	CreatedAt string `json:"created_at"`
+	Slug            string `json:"slug"`
+	Name            string `json:"name"`
+	Project         string `json:"project"`
+	CreatedAt       string `json:"created_at"`
+	PersonalConfigs bool   `json:"personal_configs"`
 }
 
 type EnvironmentResponse struct {
