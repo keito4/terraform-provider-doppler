@@ -110,6 +110,10 @@ func resourceEnvironmentRead(ctx context.Context, d *schema.ResourceData, m inte
 		return diag.FromErr(err)
 	}
 
+	if err = d.Set("personal_configs", environment.PersonalConfigs); err != nil {
+		return diag.FromErr(err)
+	}
+
 	return diags
 }
 
