@@ -621,6 +621,16 @@ func resourceSyncVercel() *schema.Resource {
 			}
 			return payload
 		},
+		DataReader: func(data map[string]interface{}, d *schema.ResourceData) error {
+			for _, key := range []string{"team_id", "project_id", "target_id", "variable_type"} {
+				if v, ok := data[key]; ok {
+					if err := d.Set(key, v); err != nil {
+						return err
+					}
+				}
+			}
+			return nil
+		},
 	}
 	return builder.Build()
 }
@@ -639,6 +649,14 @@ func resourceSyncSupabase() *schema.Resource {
 			return map[string]interface{}{
 				"project_id": d.Get("project_id"),
 			}
+		},
+		DataReader: func(data map[string]interface{}, d *schema.ResourceData) error {
+			if v, ok := data["project_id"]; ok {
+				if err := d.Set("project_id", v); err != nil {
+					return err
+				}
+			}
+			return nil
 		},
 	}
 	return builder.Build()
