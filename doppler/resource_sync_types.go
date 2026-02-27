@@ -578,7 +578,7 @@ func resourceSyncVercel() *schema.Resource {
 			"team_id": {
 				Description: "The Vercel team ID",
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				ForceNew:    true,
 			},
 			"project_id": {
@@ -612,9 +612,11 @@ func resourceSyncVercel() *schema.Resource {
 		},
 		DataBuilder: func(d *schema.ResourceData) IntegrationData {
 			payload := map[string]interface{}{
-				"team_id":    d.Get("team_id"),
 				"project_id": d.Get("project_id"),
 				"target_id":  d.Get("target_id"),
+			}
+			if teamID, ok := d.GetOk("team_id"); ok {
+				payload["team_id"] = teamID
 			}
 			if variableType, ok := d.GetOk("variable_type"); ok {
 				payload["variable_type"] = variableType

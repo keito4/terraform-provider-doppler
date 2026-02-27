@@ -20,7 +20,7 @@ resource "doppler_secrets_sync_vercel" "backend_prod" {
   team_id       = "team_xxxxxxxxxx"
   project_id    = "prj_xxxxxxxxxx"
   target_id     = "production"
-  variable_type = "encrypted"
+  variable_type = "sensitive"
 
   delete_behavior = "leave_in_target"
 }
@@ -30,10 +30,8 @@ resource "doppler_secrets_sync_vercel" "backend_stg" {
   project     = "backend"
   config      = "stg"
 
-  team_id       = "team_xxxxxxxxxx"
-  project_id    = "prj_xxxxxxxxxx"
-  target_id     = "preview"
-  variable_type = "encrypted"
+  project_id  = "prj_xxxxxxxxxx"
+  target_id   = "preview"
 
   delete_behavior = "leave_in_target"
 }
@@ -49,12 +47,12 @@ resource "doppler_secrets_sync_vercel" "backend_stg" {
 - `project` (String) The name of the Doppler project
 - `project_id` (String) The Vercel project ID
 - `target_id` (String) The Vercel environment target ("production", "preview", "development", or a custom environment ID)
-- `team_id` (String) The Vercel team ID
 
 ### Optional
 
 - `delete_behavior` (String) The behavior to be performed on the secrets in the sync target when this resource is deleted or recreated. Either `leave_in_target` (default) or `delete_from_target`.
-- `variable_type` (String) The type of Vercel environment variable ("encrypted", "sensitive", "plain")
+- `team_id` (String) The Vercel team ID. Required for team-scoped projects, omit for personal account projects.
+- `variable_type` (String) The type of Vercel environment variable ("encrypted", "sensitive", "plain"). Defaults to "encrypted" if omitted.
 
 ### Read-Only
 
