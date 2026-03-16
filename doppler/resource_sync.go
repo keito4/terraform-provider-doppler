@@ -9,10 +9,12 @@ import (
 )
 
 type SyncDataBuilderFunc = func(d *schema.ResourceData) SyncData
+type SyncDataReaderFunc = func(data map[string]interface{}, d *schema.ResourceData) error
 
 type ResourceSyncBuilder struct {
 	DataSchema    map[string]*schema.Schema
 	DataBuilder   IntegrationDataBuilderFunc
+	DataReader    SyncDataReaderFunc
 	CustomizeDiff schema.CustomizeDiffFunc
 }
 
@@ -58,6 +60,12 @@ func (builder ResourceSyncBuilder) Build() *schema.Resource {
 		DeleteContext: builder.DeleteContextFunc(),
 		Schema:        resourceSchema,
 		CustomizeDiff: builder.CustomizeDiff,
+		// NOTE: Importer is intentionally omitted. The Doppler API's GetSync
+		// endpoint does not return the sync-specific "data" field (e.g.
+		// project_id, target_id for Vercel), so terraform import cannot
+		// fully reconstruct the state. DataReader is still used to populate
+		// state during normal Read operations if the API adds data support
+		// in the future.
 	}
 }
 
@@ -107,6 +115,12 @@ func (builder ResourceSyncBuilder) ReadContextFunc() schema.ReadContextFunc {
 
 		if err = d.Set("config", sync.Config); err != nil {
 			return diag.FromErr(err)
+		}
+
+		if builder.DataReader != nil && sync.Data != nil {
+			if err = builder.DataReader(sync.Data, d); err != nil {
+				return diag.FromErr(err)
+			}
 		}
 
 		return diags
